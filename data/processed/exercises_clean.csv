@@ -1,0 +1,53 @@
+exercise_id,exercise_name,body_part,muscle_type,equipment,movement_type,movement_pattern,difficulty,sets_min,sets_max,reps_min,reps_max,est_duration_min
+0,incline dumbbell press,chest,upper chest,dumbbells,compound,push,intermediate,3.0,4.0,8,12,7.4
+1,incline cable crossovers,chest,upper chest,machine,isolation,push,beginner,3.0,4.0,10,15,8.0
+2,incline dumbbell flyes,chest,upper chest,dumbbells,isolation,push,beginner,3.0,4.0,10,15,8.0
+3,decline dumbbell press,chest,lower chest,dumbbells,compound,push,intermediate,3.0,4.0,8,12,7.4
+4,decline cable crossovers,chest,lower chest,machine,isolation,push,beginner,3.0,4.0,10,15,8.0
+5,decline dumbbell flyes,chest,lower chest,dumbbells,isolation,push,beginner,3.0,4.0,10,15,8.0
+6,chest flyes,chest,chest isolation,other,isolation,push,beginner,3.0,4.0,10,15,8.0
+7,cable crossovers,chest,chest isolation,machine,isolation,push,beginner,3.0,4.0,10,15,8.0
+8,dumbbell flyes,chest,chest isolation,dumbbells,isolation,push,beginner,3.0,4.0,10,15,8.0
+9,pull-ups,back,upper,pull-up bar,compound,pull,intermediate,3.0,4.0,8,12,7.4
+10,barbell rows,back,upper,barbell,compound,pull,advanced,3.0,4.0,8,12,7.4
+11,dumbbell rows,back,upper,dumbbells,compound,pull,intermediate,3.0,4.0,8,12,7.4
+12,seated cable rows,back,upper,machine,compound,pull,intermediate,3.0,4.0,8,12,7.4
+13,bent-over rows,back,lower,other,compound,pull,intermediate,3.0,4.0,8,12,7.4
+14,hyperextensions,back,lower,bodyweight,isolation,pull,beginner,3.0,4.0,10,15,8.0
+15,bird dog,back,lower,bodyweight,isolation,pull,beginner,3.0,3.0,10,16,6.1
+16,barbell curls,arms,biceps,barbell,isolation,pull,intermediate,3.0,4.0,8,12,7.4
+17,dumbbell curls,arms,biceps,dumbbells,isolation,pull,beginner,3.0,4.0,8,12,7.4
+18,preacher curls,arms,biceps,other,isolation,pull,beginner,3.0,4.0,8,12,7.4
+19,hammer curls,arms,biceps,other,isolation,pull,beginner,3.0,4.0,8,12,7.4
+20,concentration curls,arms,biceps,other,isolation,pull,beginner,3.0,4.0,8,12,7.4
+21,close-grip bench press,arms,triceps,barbell,compound,push,advanced,3.0,4.0,8,12,7.4
+22,overhead triceps extensions,arms,triceps,other,isolation,push,beginner,3.0,4.0,8,12,7.4
+23,triceps pushdowns,arms,triceps,other,isolation,push,beginner,3.0,4.0,8,12,7.4
+24,skull crushers,arms,triceps,other,isolation,other,beginner,3.0,4.0,8,12,7.4
+25,triceps dips,arms,triceps,pull-up bar,compound,push,intermediate,3.0,5.0,8,13,9.5
+26,barbell squats,legs,quadriceps,barbell,compound,squat,advanced,3.0,4.0,8,12,7.4
+27,leg press,legs,quadriceps,machine,compound,push,intermediate,3.0,4.0,8,12,7.4
+28,leg extensions,legs,quadriceps,other,isolation,squat,beginner,3.0,4.0,10,15,8.0
+29,romanian deadlifts,legs,hamstrings,barbell,compound,hinge,advanced,3.0,4.0,8,12,7.4
+30,leg curls,legs,hamstrings,other,isolation,hinge,beginner,3.0,4.0,10,15,8.0
+31,barbell hip thrusts,legs,glutes,barbell,isolation,other,intermediate,3.0,4.0,8,12,7.4
+32,donkey kicks,legs,glutes,other,isolation,other,beginner,3.0,3.0,10,15,6.0
+33,standing calf raises,legs,calves,bodyweight,isolation,other,beginner,3.0,3.0,15,20,6.8
+34,seated calf raises,legs,calves,machine,isolation,other,beginner,3.0,3.0,15,21,6.9
+35,dumbbell front raises,shoulders,anterior,dumbbells,isolation,push,beginner,3.0,4.0,8,12,7.4
+36,military press,shoulders,anterior,other,compound,push,intermediate,3.0,4.0,8,12,7.4
+37,lateral raises,shoulders,lateral,other,isolation,push,beginner,3.0,4.0,10,15,8.0
+38,bent-over lateral raises,shoulders,posterior,other,isolation,push,beginner,3.0,4.0,10,15,8.0
+39,face pulls,shoulders,posterior,other,isolation,pull,beginner,3.0,4.0,10,15,8.0
+40,crunches,abs,upper,bodyweight,isolation,core,beginner,3.0,4.0,10,15,8.0
+41,leg raises,abs,upper,bodyweight,isolation,other,beginner,3.0,4.0,10,15,8.0
+42,bicycle crunches,abs,middle,bodyweight,isolation,core,beginner,3.0,4.0,10,15,8.0
+43,russian twists,abs,middle,other,isolation,other,beginner,3.0,4.0,10,15,8.0
+44,hanging leg raises,abs,lower,bodyweight,isolation,other,beginner,3.0,4.0,10,15,8.0
+45,plank,abs,lower,bodyweight,isolation,core,intermediate,,,1,1,
+46,wrist curl,forearms,wrist flexors,other,isolation,other,beginner,3.0,4.0,10,15,8.0
+47,wrist extension,forearms,wrist extensors,other,isolation,other,beginner,3.0,4.0,10,15,8.0
+48,plate pinch,forearms,grip strength,other,isolation,other,beginner,3.0,4.0,15,20,9.0
+49,towel pull-up,forearms,grip strength,pull-up bar,compound,pull,intermediate,3.0,4.0,10,15,8.0
+50,fat grip dumbbell curl,forearms,grip strength,dumbbells,isolation,other,beginner,3.0,4.0,10,15,8.0
+51,hammer curl,forearms,grip strength,other,isolation,other,beginner,3.0,4.0,10,15,8.0
