@@ -1,67 +1,79 @@
-# fitness-recommender
-A machine learning project that recommends personalized workout plans by implementing and comparing three recommendation approaches: Content-Based Filtering, Collaborative Filtering (Matrix Factorization), and Neural Collaborative Filtering.
 # FitRec: A Multi-Approach Fitness Workout Recommender
 
-A machine learning project that recommends personalized workout plans by implementing and comparing three recommendation approaches: Content-Based Filtering, Collaborative Filtering (Matrix Factorization), and Neural Collaborative Filtering.
+A machine learning project that recommends personalized workout plans by implementing and comparing three recommendation approaches: Content-Based Filtering, Collaborative Filtering (SVD), and Neural Collaborative Filtering (NCF).
 
 ## Project Overview
 
-**Problem:** Given a user's fitness profile (goals, fitness level, available equipment, time constraints), recommend a personalized set of exercises to form a workout plan.
+**Problem:** Given a user's fitness profile (goals, fitness level, available equipment, body focus preference), recommend a personalized set of exercises to form a workout plan.
 
 **What makes this project stand out:**
-- Implements 3 distinct ML approaches on the same problem
-- Rigorous evaluation and comparison using ranking metrics
-- Synthetic user-interaction data generation with documented methodology
-- End-to-end pipeline from data processing to model evaluation
-- Clean, modular, well-documented code
+- Implements and rigorously compares 3 distinct ML approaches on the same problem
+- Engineers 8 new features from a 5-column dataset
+- Generates realistic synthetic interaction data with documented preference rules
+- Evaluates using standard ranking metrics (Precision@K, Recall@K, NDCG@K, Hit Rate@K)
+- Includes detailed analysis of why each model performs the way it does
 
 ---
 
-## Tools & Setup
+## Results
 
-### Language
-- **Python 3.10+** (primary language for ML/data science ecosystem)
+| Metric | Content-Based | SVD (Collaborative) | Neural CF | Best |
+|--------|:------------:|:-------------------:|:---------:|:----:|
+| Precision@5 | 0.1071 | 0.0810 | **0.1099** | NCF |
+| Recall@5 | 0.2795 | 0.2067 | **0.2925** | NCF |
+| NDCG@5 | 0.2029 | 0.1511 | **0.2103** | NCF |
+| Hit Rate@5 | **0.4744** | 0.3591 | 0.4701 | CB |
+| Precision@10 | 0.0937 | 0.0741 | **0.0953** | NCF |
+| Recall@10 | 0.4857 | 0.3818 | **0.5025** | NCF |
+| NDCG@10 | 0.2828 | 0.2184 | **0.2917** | NCF |
+| Hit Rate@10 | 0.7138 | 0.5963 | **0.7214** | NCF |
 
-### Recommended IDE
-- **VS Code** with the following extensions:
-  - Python (Microsoft)
-  - Jupyter (Microsoft)
-  - Pylance (for type checking)
-  - GitLens (for version control)
-- Alternative: **PyCharm** (Community Edition is free)
+![Model Comparison](results/figures/11_model_comparison.png)
 
-### Core Libraries
+---
 
-| Library | Purpose | Install |
-|---------|---------|---------|
-| **pandas** | Data manipulation & cleaning | `pip install pandas` |
-| **numpy** | Numerical computing | `pip install numpy` |
-| **scikit-learn** | ML utilities, preprocessing, metrics | `pip install scikit-learn` |
-| **PyTorch** | Neural Collaborative Filtering model | `pip install torch` |
-| **surprise** | Collaborative filtering (SVD/ALS) | `pip install scikit-surprise` |
-| **matplotlib** | Plotting & visualization | `pip install matplotlib` |
-| **seaborn** | Statistical visualizations | `pip install seaborn` |
-| **jupyter** | Interactive notebooks for EDA | `pip install jupyter` |
-| **streamlit** | (Optional) Interactive demo app | `pip install streamlit` |
+## Key Takeaways
 
-### Quick Install
-```bash
-# Create a virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+### Why Neural CF Wins (7/8 Metrics)
+The Neural Collaborative Filtering model outperforms the other two approaches because it combines the strengths of both: it learns latent user-exercise embeddings (like SVD) while also capturing non-linear interaction patterns through its MLP layers. The dual-pathway architecture (GMF + MLP) gives it the flexibility to model both simple and complex preference signals.
 
-# Install all dependencies
-pip install -r requirements.txt
-```
+### Why Content-Based Is a Close Second
+Content-based filtering performs strongly because our synthetic interaction data was generated using content-based preference rules (e.g., beginners prefer easier exercises, bodyweight-only users can't use barbells). This gives the content-based model a natural "home court advantage" — it's essentially reverse-engineering the rules that created the data.
 
-### Dataset
-- **Primary:** [The Ultimate Gym Exercises Dataset](https://www.kaggle.com/datasets/peshimaammuzammil/the-ultimate-gym-exercises-dataset-for-all-levels) (~2,900 exercises)
-  - Columns: Exercise Name, Description, Type, Body Part, Equipment, Difficulty Level, Rating
-- **Supplementary:** Synthetic user profiles & interaction data (generated in `src/data_generation.py`)
+### Why SVD Struggles
+SVD underperforms for two reasons: (1) The interaction matrix is relatively sparse (1,000 users × 51 exercises with only 15 interactions per user), giving SVD limited signal to learn from. (2) SVD can only capture linear relationships between latent factors, missing the non-linear patterns that Neural CF picks up.
 
-### Version Control
-- **Git + GitHub** — push your code to a public repo for your application
-- Write clear commit messages showing your development process
+### What Would Change with Real Data
+With real-world interaction data, we'd expect collaborative and neural approaches to improve significantly, as they could discover preference patterns that aren't captured by content features alone — for example, users who do yoga might also prefer swimming, a relationship that content features wouldn't predict.
+
+---
+
+## Methodology
+
+### Phase 1: Data Preparation
+- **Dataset:** [The Ultimate Gym Exercises Dataset](https://www.kaggle.com/datasets/peshimaammuzammil/the-ultimate-gym-exercises-dataset-for-all-levels) — 51 exercises with body part, muscle type, sets, and reps
+- **Feature Engineering:** Enriched from 5 to 13 columns by inferring equipment, movement type (compound/isolation), movement pattern (push/pull/squat/hinge/core), difficulty level, and estimated duration from exercise names and attributes
+- **Synthetic Data:** Generated 1,000 user profiles and 15,000 user-exercise interactions using 5 documented preference rules (difficulty matching, equipment compatibility, body part preference, goal alignment, age adjustments)
+
+![Feature Distributions](results/figures/01_feature_distributions.png)
+
+### Phase 2: Model Implementation
+
+**Model 1 — Content-Based Filtering:**
+Encodes exercises as one-hot feature vectors and maps user profiles into the same feature space. Ranks exercises by cosine similarity. Handles cold-start users since no interaction history is needed.
+
+**Model 2 — Collaborative Filtering (SVD):**
+Builds a user-exercise interaction matrix, mean-centers ratings, and applies Truncated SVD to learn latent factors. Predicts ratings for unseen exercises by reconstructing the matrix from learned factors.
+
+![Exercise Embeddings](results/figures/09_exercise_embeddings.png)
+
+**Model 3 — Neural Collaborative Filtering:**
+PyTorch model with dual pathways — GMF (element-wise embedding product, like matrix factorization) and MLP (concatenated embeddings through dense layers). Both pathways merge for final prediction. Architecture: 32-dim embeddings → MLP[64, 32, 16] with BatchNorm and Dropout.
+
+![Training Curves](results/figures/10_ncf_training_curves.png)
+
+### Phase 3: Evaluation
+All three models evaluated on the same 80/20 train/test split using Precision@K, Recall@K, NDCG@K, and Hit Rate@K for K ∈ {5, 10}.
 
 ---
 
@@ -69,153 +81,52 @@ pip install -r requirements.txt
 
 ```
 fitness-recommender/
-│
-├── README.md                          # This file
-├── requirements.txt                   # Python dependencies
-├── .gitignore                         # Git ignore rules
-│
-├── data/
-│   ├── raw/                           # Original dataset (don't modify)
-│   │   └── gym_exercises.csv
-│   ├── processed/                     # Cleaned & feature-engineered data
-│   │   ├── exercises_clean.csv
-│   │   ├── user_profiles.csv
-│   │   └── user_exercise_interactions.csv
-│   └── README.md                      # Data dictionary & documentation
-│
 ├── notebooks/
-│   ├── 01_eda.ipynb                   # Exploratory Data Analysis
-│   ├── 02_data_generation.ipynb       # Synthetic user data creation
-│   ├── 03_content_based.ipynb         # Content-based model experiments
-│   ├── 04_collaborative_filtering.ipynb  # SVD/ALS experiments
-│   ├── 05_neural_cf.ipynb             # Neural model experiments
-│   └── 06_evaluation_comparison.ipynb # Final comparison & analysis
-│
-├── src/
-│   ├── __init__.py
-│   ├── data_processing.py             # Data loading & cleaning
-│   ├── data_generation.py             # Synthetic user/interaction generation
-│   ├── feature_engineering.py         # Exercise & user feature vectors
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── content_based.py           # Content-based filtering
-│   │   ├── collaborative_filtering.py # Matrix factorization (SVD)
-│   │   └── neural_cf.py              # Neural collaborative filtering
-│   ├── evaluation.py                  # Metrics: Precision@K, NDCG, etc.
-│   ├── recommender.py                 # Unified recommendation interface
-│   └── utils.py                       # Helper functions
-│
+│   ├── 01_eda.ipynb                      # Exploratory Data Analysis & Feature Engineering
+│   ├── 02_data_generation.ipynb          # Synthetic User & Interaction Generation
+│   ├── 03_content_based.ipynb            # Content-Based Filtering Model
+│   ├── 04_collaborative_filtering.ipynb  # SVD Matrix Factorization Model
+│   └── 05_neural_cf.ipynb               # Neural Collaborative Filtering Model
+├── data/
+│   ├── raw/Workout.csv                   # Original dataset
+│   └── processed/                        # Cleaned exercises, user profiles, interactions
 ├── results/
-│   ├── figures/                       # Generated plots & charts
-│   └── metrics/                       # Saved evaluation results
-│
-├── app/                               # (Optional) Streamlit demo
-│   └── streamlit_app.py
-│
-└── tests/                             # Unit tests (bonus points)
-    └── test_models.py
+│   ├── figures/                          # All generated visualizations
+│   └── metrics/                          # JSON files with evaluation results
+├── src/
+│   └── models/                           # Modular model code
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## 🔬 Methodology
-
-### Phase 1: Data Preparation (Days 1-2)
-1. Download and clean the exercise dataset
-2. Engineer exercise features (encode body part, equipment, difficulty, type)
-3. Generate synthetic user profiles with realistic fitness goals
-4. Simulate user-exercise interactions based on logical preference rules
-
-### Phase 2: Model Implementation (Days 3-8)
-
-#### Model 1: Content-Based Filtering
-- Represent exercises as feature vectors (one-hot/multi-hot encoding of attributes)
-- Create user preference profiles from their stated goals
-- Rank exercises by cosine similarity between user profile and exercise vectors
-- **Key concepts:** TF-IDF on descriptions, cosine similarity, feature weighting
-
-#### Model 2: Collaborative Filtering (Matrix Factorization)
-- Build user-exercise interaction matrix from synthetic data
-- Apply SVD (Singular Value Decomposition) via Surprise library
-- Learn latent factors that capture hidden user preferences
-- **Key concepts:** Matrix factorization, latent factors, cold-start problem
-
-#### Model 3: Neural Collaborative Filtering
-- PyTorch model combining user & exercise embeddings
-- MLP layers learn non-linear interaction patterns
-- Can incorporate both collaborative signals AND content features
-- **Key concepts:** Embeddings, multi-layer perceptron, BCE loss, implicit feedback
-
-### Phase 3: Evaluation & Analysis (Days 9-11)
-
-| Metric | What it measures |
-|--------|------------------|
-| **Precision@K** | Of the top K recommendations, how many are relevant? |
-| **Recall@K** | Of all relevant exercises, how many appear in top K? |
-| **NDCG@K** | Are the most relevant exercises ranked higher? |
-| **Hit Rate** | Does at least one relevant exercise appear in top K? |
-| **Coverage** | What fraction of exercises ever get recommended? |
-
-### Phase 4: Polish & Documentation (Days 12-14)
-- Write analysis comparing the three approaches
-- Create visualizations (performance charts, embedding visualizations)
-- Clean up code, add docstrings, write README
-- (Optional) Build Streamlit demo app
-
----
-
- 🚀 How to Run
+## How to Run
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/fitness-recommender.git
+# Clone and setup
+git clone https://github.com/Khaledel123/fitness-recommender.git
 cd fitness-recommender
-
-# 2. Set up environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# 3. Download dataset
-# Place gym_exercises.csv in data/raw/
-
-# 4. Run the pipeline
-python src/data_processing.py        # Clean data
-python src/data_generation.py        # Generate synthetic users
-python src/models/content_based.py   # Train content-based model
-python src/models/collaborative_filtering.py  # Train SVD model
-python src/models/neural_cf.py       # Train neural model
-python src/evaluation.py             # Compare all models
-
-# 5. (Optional) Launch demo
-streamlit run app/streamlit_app.py
+# Run notebooks in order (1-5) using Jupyter
+jupyter notebook
 ```
 
 ---
 
-## Results
-
-> _To be filled in after running experiments_
-
-| Model | Precision@10 | Recall@10 | NDCG@10 |
-|-------|-------------|-----------|---------|
-| Content-Based | - | - | - |
-| SVD (Collaborative) | - | - | - |
-| Neural CF | - | - | - |
-
----
-
-## Key Takeaways
-
-> _To be filled in after analysis — this is the section admissions committees care about most!_
-
-Discuss:
-- Which approach works best and **why**
-- Trade-offs between approaches (cold-start, scalability, interpretability)
-- Limitations of synthetic data and how real data would change results
-- What you'd do differently with more time/data
+## Tech Stack
+- **Python 3.13** — Primary language
+- **PyTorch** — Neural Collaborative Filtering model
+- **scikit-learn** — SVD, preprocessing, evaluation utilities
+- **pandas / NumPy** — Data manipulation
+- **matplotlib / seaborn** — Visualizations
+- **Jupyter** — Interactive experimentation
 
 ---
 
 ## Author
-**Kelk** — Software Engineering, University of Texas at Dallas
+**Khaled Elkhaled** — Software Engineer
+
